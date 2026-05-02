@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>أداة تقويم وتحكيم الخطط التشغيلية للمدارس</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1e3a8a; /* أزرق داكن احترافي */
+            --secondary: #2563eb; /* أزرق ساطع */
+            --accent: #f59e0b; /* ذهبي للتباين */
+            --bg-light: #f8fafc;
+            --text-dark: #0f172a;
+            --border: #cbd5e1;
+            --white: #ffffff;
+        }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: #e2e8f0;
+            color: var(--text-dark);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: var(--white);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border-radius: 12px;
+            overflow: hidden;
+            border-top: 8px solid var(--primary);
+        }
+
+        /* ترويسة المنصة */
+        .header {
+            background-color: var(--white);
+            color: var(--primary);
+            padding: 30px 20px;
+            text-align: center;
+            border-bottom: 3px solid var(--accent);
+        }
+
+        .header h1 { margin: 0; font-size: 2.2rem; font-weight: 800; color: var(--primary); }
+
+        /* الأقسام والشبكات */
+        .section { padding: 25px; border-bottom: 2px dashed var(--border); }
+        .section-title {
+            color: var(--primary); font-size: 1.5rem; border-right: 5px solid var(--accent);
+            padding-right: 15px; margin-top: 0; margin-bottom: 20px;
+            background-color: #e0f2fe; padding: 10px 15px 10px 10px; border-radius: 4px;
+        }
+
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 15px; }
+
+        .form-group { display: flex; flex-direction: column; gap: 6px; }
+        .form-group label { font-weight: 700; color: var(--secondary); font-size: 1rem; }
+        
+        input[type="text"], input[type="number"], select {
+            padding: 10px; border: 1px solid var(--border); border-radius: 6px;
+            font-family: inherit; font-size: 1rem; background-color: var(--bg-light); transition: all 0.3s;
+        }
+        input:focus, select:focus { outline: none; border-color: var(--primary); background-color: var(--white); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
+
+        /* الجداول التفاعلية */
+        .data-table {
+            width: 100%; border-collapse: collapse; margin-top: 10px; margin-bottom: 20px;
+            font-size: 1rem; table-layout: fixed; 
+        }
+
+        .data-table th, .data-table td {
+            border: 1px solid var(--border); text-align: center; vertical-align: middle; padding: 0; 
+        }
+
+        .data-table th { background-color: var(--primary); color: var(--white); font-weight: bold; padding: 15px 8px; }
+
+        /* الحاويات النصية */
+        .editable-text {
+            width: 100%; min-height: 40px; padding: 12px 10px; box-sizing: border-box;
+            border: 2px solid transparent; text-align: right; outline: none;
+            white-space: pre-wrap; word-wrap: break-word; line-height: 1.6; transition: background 0.3s, border 0.3s;
+        }
+        .editable-text.center-text { text-align: center; font-weight: bold; color: var(--primary); display: flex; align-items: center; justify-content: center; }
+        .editable-text:focus { border: 2px solid var(--accent); background: var(--white); }
+
+        /* أزرار التقييم المتوازنة والاحترافية */
+        .radio-group { 
+            display: flex; justify-content: space-evenly; align-items: center; 
+            gap: 5px; width: 100%; padding: 10px 0;
+        }
+        .radio-item { display: flex; cursor: pointer; margin: 0; }
+        .radio-item input[type="radio"] { display: none; } /* إخفاء الزر الافتراضي */
+        .radio-item span {
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 32px; height: 32px; border: 2px solid var(--border);
+            border-radius: 50%; background-color: var(--bg-light);
+            color: var(--text-dark); font-weight: bold; font-size: 1rem;
+            transition: all 0.2s ease-in-out;
+        }
+        .radio-item input[type="radio"]:checked + span {
+            background-color: var(--secondary);
+            color: var(--white);
+            border-color: var(--secondary);
+            box-shadow: 0 0 8px rgba(37, 99, 235, 0.4);
+            transform: scale(1.1);
+        }
+
+        /* لوحة إرشادية للدرجات */
+        .guide-panel {
+            background-color: #f8fafc; border: 1px solid var(--border); border-radius: 8px; padding: 15px;
+            margin-bottom: 20px; display: flex; justify-content: space-around; font-weight: bold; color: var(--text-dark);
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .guide-item span { color: var(--secondary); font-size: 1.2rem; margin-left: 5px; }
+
+        /* مربعات الدرجات */
+        .score-box { background-color: #e0f2fe; padding: 15px; border-radius: 8px; border: 1px solid var(--border); margin-top: 20px; }
+        .score-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; text-align: center; }
+        .score-grid h3 { color: var(--primary); margin-bottom: 10px; font-size: 1.1rem; }
+        .score-input { font-size: 1.5rem; font-weight: bold; color: var(--accent); text-align: center; background: transparent; border: none; border-bottom: 2px dashed var(--primary); width: 80px;}
+
+        /* التواقيع */
+        .signatures { display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; text-align: center; margin-top: 20px; padding: 20px; background: #f8fafc; border-radius: 8px; border: 1px solid var(--border); }
+        .signatures input { border: none; border-bottom: 1px dashed var(--primary); background: transparent; width: 90%; text-align: center; outline: none; padding: 5px;}
+
+        /* أزرار الإجراءات */
+        .actions { text-align: center; padding: 40px; background-color: var(--bg-light); border-top: 1px solid var(--border); }
+        .btn-print {
+            background-color: var(--primary); color: white; border: none; padding: 15px 40px;
+            font-size: 1.2rem; font-weight: bold; font-family: inherit; border-radius: 8px;
+            cursor: pointer; transition: background-color 0.3s; box-shadow: 0 4px 6px rgba(30, 58, 138, 0.3);
+        }
+        .btn-print:hover { background-color: #172554; }
+
+        /* التذييل */
+        .footer { text-align: center; padding: 25px; background-color: #0f172a; color: white; font-weight: bold; font-size: 1.1rem; }
+        .footer a { color: var(--accent); text-decoration: none; display: block; margin-top: 8px; direction: ltr;}
+
+        /* ======================================================= */
+        /* إعدادات الطباعة الأنيقة لـ PDF                          */
+        /* ======================================================= */
+        @media print {
+            @page {
+                size: A4 portrait; /* الورقة بالطول */
+                margin: 10mm; 
+            }
+
+            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+
+            body { 
+                background: white !important; padding: 0; 
+                font-size: 10pt !important; 
+                color: #000 !important;
+            }
+
+            .container { 
+                box-shadow: none !important; border: none !important; 
+                max-width: 100% !important; width: 100% !important; border-top: none !important;
+            }
+
+            .actions, .footer { display: none !important; }
+            
+            .header { padding: 5px 0 15px 0; border-bottom: 2px solid #1e3a8a; margin-bottom: 15px;}
+            .header h1 { font-size: 18pt !important; color: #1e3a8a !important; }
+            
+            .section { padding: 10px 0; border-bottom: none; page-break-inside: auto; }
+            .section-title { font-size: 13pt !important; padding: 6px 10px; margin-bottom: 10px; color: #1e3a8a !important; background-color: #e0f2fe !important; border-right: 4px solid #f59e0b !important;}
+            
+            .grid-3 { gap: 10px; margin-bottom: 10px; }
+            .form-group label { font-size: 10pt !important; color: #000 !important;}
+            input, select { padding: 4px; font-size: 10pt !important; border: none !important; border-bottom: 1px dashed #94a3b8 !important; background: transparent !important; color: #000 !important; height: 22px;}
+
+            .data-table { font-size: 10.5pt !important; margin-bottom: 15px; page-break-inside: auto; border-collapse: collapse; width: 100%; table-layout: fixed; }
+            
+            /* توازن الأعمدة للطباعة */
+            .data-table th:nth-child(1) { width: 5%; }  /* م */
+            .data-table th:nth-child(2) { width: 15%; } /* المجال */
+            .data-table th:nth-child(3) { width: 45%; text-align: right; padding-right: 5px;} /* البند */
+            .data-table th:nth-child(4) { width: 15%; } /* الدرجة */
+            .data-table th:nth-child(5) { width: 20%; } /* ملاحظات */
+
+            .data-table tr { page-break-inside: avoid !important; page-break-after: auto; }
+            .data-table th { background-color: #1e3a8a !important; color: #ffffff !important; padding: 8px 4px !important; border: 1px solid #333 !important; font-size: 10.5pt !important;}
+            .data-table td { border: 1px solid #666 !important; padding: 0 !important; }
+
+            .editable-text { font-size: 10.5pt !important; line-height: 1.4 !important; padding: 6px !important; min-height: auto !important; border: none !important; color: #000 !important; overflow: hidden !important;}
+            .editable-text.center-text { color: #1e3a8a !important; }
+
+            /* ضبط إظهار أزرار التقييم المتوازنة في الطباعة */
+            .radio-group { justify-content: space-evenly; gap: 2px; padding: 4px 0;}
+            .radio-item span {
+                width: 20px !important; height: 20px !important;
+                border: 1px solid #666 !important; font-size: 9pt !important;
+            }
+            .radio-item input[type="radio"]:checked + span {
+                background-color: #1e3a8a !important;
+                color: #fff !important;
+                border-color: #1e3a8a !important;
+                transform: none !important;
+            }
+            
+            .guide-panel { font-size: 9.5pt !important; padding: 8px; border: 1px solid #000; }
+            .score-box { background: transparent !important; border: 1px solid #000; padding: 10px; page-break-inside: avoid;}
+            .score-grid h3 { font-size: 10pt !important; color: #000 !important;}
+            .score-input { font-size: 12pt !important; color: #000 !important; border-bottom: 1px solid #000;}
+
+            .signatures { padding: 10px; background: transparent; border: 1px solid #000; margin-top: 10px;}
+            .signatures p { font-size: 9pt !important; font-weight: bold;}
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>أداة تقويم الخطط التشغيلية للمدارس</h1>
+    </div>
+
+    <!-- أولاً: البيانات الأساسية -->
+    <div class="section">
+        <h2 class="section-title">البيانات الأساسية</h2>
+        <div class="grid-3">
+            <div class="form-group">
+                <label>الخطة التشغيلية لمدرسة</label>
+                <input type="text" placeholder="أدخل اسم المدرسة">
+            </div>
+            <div class="form-group">
+                <label>المرحلة الدراسية</label>
+                <select>
+                    <option>الابتدائية</option>
+                    <option>المتوسطة</option>
+                    <option>الثانوية</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>العام الدراسي</label>
+                <input type="text" value="1447هـ">
+            </div>
+        </div>
+    </div>
+
+    <!-- ثانياً: استمارة التحكيم والتقويم -->
+    <div class="section">
+        <h2 class="section-title">بنود تقويم الخطة التشغيلية</h2>
+        
+        <div class="guide-panel">
+            <div class="guide-item"><span>3</span> = من 75% فأكثر</div>
+            <div class="guide-item"><span>2</span> = من 50% إلى أقل من 75%</div>
+            <div class="guide-item"><span>1</span> = من 10% إلى أقل من 50%</div>
+            <div class="guide-item"><span>0</span> = العنصر غير متوفر</div>
+        </div>
+
+        <table class="data-table" id="evalTable">
+            <thead>
+                <tr>
+                    <th>م</th>
+                    <th>المجال</th>
+                    <th>البند</th>
+                    <th>الدرجة المستحقة</th>
+                    <th>ملاحظات</th>
+                </tr>
+            </thead>
+            <tbody>
+                <script>
+                    const evalData = [
+                        { area: "المرجعية", items: ["الخطة متضمنة نتائج تحليل الواقع (SWOT) المبني على نتائج التقويم الذاتي.", "الخطة متضمنة البيانات الكمية والنوعية للمدرسة.", "الخطة متضمنة فريق التخطيط."] },
+                        { area: "الرؤية والرسالة", items: ["الرؤية تميزت بالاختصار.", "الرؤية اتسمت بالعمومية والشمول.", "الرؤية واقعية قابلة للتحقيق.", "الرسالة مرتبطة بالرؤية ومحققة لها.", "الرسالة واضحة ومفهومة."] },
+                        { area: "الأهداف", items: ["الخطة متضمنة الأهداف العامة متوافقة مع أهداف الوزارة.", "الأهداف العامة مرتبطة بتحليل الواقع (SWOT).", "الأهداف التفصيلية مصاغة بشكل صحيح.", "الأهداف التفصيلية غير مركبة.", "الأهداف التفصيلية قابلة للقياس بما لا يقل عن 70% منها."] },
+                        { area: "مؤشرات التحقق", items: ["مؤشرات تحقق الهدف مصاغة بشكل صحيح.", "مؤشرات تحقق الهدف مرتبطة بالأهداف التفصيلية.", "مؤشرات تحقق الهدف قابلة للقياس."] },
+                        { area: "البرامج والمشاريع", items: ["برامج ومشاريع الخطة شملت جميع الأهداف التفصيلية.", "الخطة تتضمن برامج ومشاريع خطة التحسين.", "زمن التنفيذ محدد بالفصل والأسبوع في 70% من الخطة.", "الخطة متضمنة أساليب واضحة ومنوعة لتنفيذ البرامج والمشاريع.", "الخطة متضمنة تحديد المسؤول عن التنفيذ وفريق العمل بالاسم والصفة الوظيفية.", "الفئة المستهدفة محددة لكل برنامج ومشروع بالصفة والعدد.", "البرامج والمشاريع متنوعة وشاملة (الإدارة المدرسية - التعليم والتعلم - نواتج التعلم - البيئة المدرسية).", "الخطة متضمنة برامج ومشاريع تعنى بالتحصيل الدراسي.", "الخطة متضمنة برامج ومشاريع تعنى بالانضباط المدرسي للطلاب.", "الخطة متضمنة برامج ومشاريع تعنى بالتنمية المهنية للمعلمين.", "الخطة متضمنة برامج ومشاريع تعنى بالتنمية المهنية للهيئة الإدارية.", "الخطة متضمنة برامج ومشاريع تعنى بالتوجيه الطلابي.", "الخطة متضمنة برامج ومشاريع تعنى بالنشاط الطلابي اللاصفي.", "الخطة متضمنة برامج ومشاريع تعنى بالأمن والسلامة.", "الخطة متضمنة برامج ومشاريع تعنى بالصحة المدرسية.", "الخطة متضمنة برامج ومشاريع تنمي قدرات ومواهب الطلاب (المسابقات، برامج الموهوبين..).", "الخطة متضمنة نظام لمتابعة وتقويم الخطة.", "الخطة متضمنة نظام للمساءلة في حال التأخير أو عدم التنفيذ."] }
+                    ];
+
+                    let counter = 1;
+                    evalData.forEach(domain => {
+                        domain.items.forEach((item, index) => {
+                            let rowspan = index === 0 ? `<td rowspan="${domain.items.length}"><div class="editable-text center-text">${domain.area}</div></td>` : '';
+                            document.write(`
+                            <tr>
+                                <td><div class="editable-text center-text">${counter}</div></td>
+                                ${rowspan}
+                                <td><div class="editable-text">${item}</div></td>
+                                <td>
+                                    <div class="radio-group">
+                                        <label class="radio-item"><input type="radio" name="q${counter}" value="3"><span>3</span></label>
+                                        <label class="radio-item"><input type="radio" name="q${counter}" value="2"><span>2</span></label>
+                                        <label class="radio-item"><input type="radio" name="q${counter}" value="1"><span>1</span></label>
+                                        <label class="radio-item"><input type="radio" name="q${counter}" value="0"><span>0</span></label>
+                                    </div>
+                                </td>
+                                <td><div class="editable-text" contenteditable="true"></div></td>
+                            </tr>
+                            `);
+                            counter++;
+                        });
+                    });
+                </script>
+            </tbody>
+        </table>
+
+        <!-- حساب الدرجات والملاحظات -->
+        <div class="score-box">
+            <div class="form-group" style="margin-bottom: 20px;">
+                <label style="color: var(--primary);">مرئيات لجنة تقويم الخطة بمكتب التعليم:</label>
+                <div class="editable-text" contenteditable="true" style="border: 1px solid var(--border); background: var(--white);"></div>
+            </div>
+            
+            <div class="score-grid">
+                <div>
+                    <h3>الدرجة النهائية للخطة</h3>
+                    <input type="text" class="score-input" placeholder=" / 102">
+                </div>
+                <div>
+                    <h3>الدرجة بعد المراجعة</h3>
+                    <input type="text" class="score-input" placeholder=" / 102">
+                </div>
+                <div>
+                    <h3>الدرجة بعد التدقيق</h3>
+                    <input type="text" class="score-input" placeholder=" / 102">
+                </div>
+            </div>
+        </div>
+
+        <!-- أعضاء لجنة التقويم -->
+        <h3 style="color: var(--primary); text-align: center; margin-top: 30px;">أعضاء لجنة تقويم الخطة (المجموعة)</h3>
+        <div class="signatures">
+            <div><p>1. الاسم والتوقيع</p><input type="text"></div>
+            <div><p>2. الاسم والتوقيع</p><input type="text"></div>
+            <div><p>3. الاسم والتوقيع</p><input type="text"></div>
+            <div><p>4. الاسم والتوقيع</p><input type="text"></div>
+            <div><p>5. الاسم والتوقيع</p><input type="text"></div>
+        </div>
+    </div>
+
+    <!-- الأزرار -->
+    <div class="actions">
+        <button class="btn-print" onclick="window.print()">🖨️ حفظ كملف PDF / طباعة الاستمارة</button>
+    </div>
+
+    <!-- التذييل -->
+    <div class="footer">
+        <div>تصميم د/فواز</div>
+        <div style="font-size: 0.95rem; margin-top:8px;">تفضل للمزيد</div>
+        <a href="https://t.me/TAqhjT3MFVE1Yzk0" target="_blank">https://t.me/TAqhjT3MFVE1Yzk0</a>
+    </div>
+</div>
+
+</body>
+</html>
