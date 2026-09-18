@@ -1,6 +1,7 @@
-export type ProjectStatus = 'منشور' | 'قيد التطوير' | 'داخلي';
+export type ProjectStatus = 'منشور' | 'قيد التطوير' | 'داخلي' | 'مؤرشف' | 'متوقف' | 'تجريبي';
 
 export type Project = {
+  id?: string;
   slug: string;
   name: string;
   shortDescription: string;
@@ -9,6 +10,10 @@ export type Project = {
   category: string;
   status: ProjectStatus;
   url?: string;
+  visible?: boolean;
+  sortOrder?: number;
+  sources?: Array<Record<string, unknown>>;
+  isSystem?: boolean;
   featured: boolean;
   tags: string[];
   highlights: string[];
