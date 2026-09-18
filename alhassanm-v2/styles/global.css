@@ -96,12 +96,18 @@ input {
   .status-published { border-color: color-mix(in srgb, var(--success) 35%, transparent); background: color-mix(in srgb, var(--success) 10%, transparent); color: var(--success); }
   .status-development { border-color: color-mix(in srgb, var(--primary) 35%, transparent); background: color-mix(in srgb, var(--primary) 10%, transparent); color: var(--primary); }
   .status-internal { border-color: color-mix(in srgb, var(--neutral-status) 30%, transparent); background: color-mix(in srgb, var(--neutral-status) 10%, transparent); color: var(--neutral-status); }
+  .status-archived { border-color: rgba(148, 163, 184, .3); background: rgba(148, 163, 184, .1); color: var(--neutral-status); }
+  .status-stopped { border-color: rgba(244, 63, 94, .28); background: rgba(244, 63, 94, .08); color: #fb7185; }
+  .status-experimental { border-color: rgba(168, 85, 247, .28); background: rgba(168, 85, 247, .08); color: #c084fc; }
   .interactive-preview { @apply overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--background)]; }
   .preview-control { @apply inline-flex items-center gap-1.5 rounded-md border border-[var(--border)] bg-[var(--soft)] px-2.5 py-1.5 text-[11px] font-semibold text-[var(--primary)] transition hover:border-cyan-300/35; }
   .preview-tab { @apply shrink-0 rounded-md px-2.5 py-1.5 text-[10px] text-[var(--muted)] transition hover:bg-[var(--soft)] hover:text-[var(--foreground)]; }
   .preview-tab-active { @apply shrink-0 rounded-md bg-[var(--soft)] px-2.5 py-1.5 text-[10px] font-bold text-[var(--primary)]; }
   .preview-icon { @apply inline-grid h-9 w-9 place-items-center rounded-lg border border-cyan-300/20 bg-cyan-300/5 text-[var(--primary)]; }
   .preview-bar { @apply min-w-0 flex-1 rounded-t-md bg-[var(--primary)] opacity-75 transition-all duration-500; }
+  .admin-input { @apply h-11 w-full rounded-lg border border-[var(--border)] bg-[var(--card)] px-3 text-sm text-[var(--foreground)] outline-none transition focus:border-cyan-300/50; }
+  select.admin-input, select { color-scheme: dark; }
+  html.light select.admin-input, html.light select { color-scheme: light; }
 }
 
 @keyframes enter {
