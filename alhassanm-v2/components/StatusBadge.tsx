@@ -5,6 +5,9 @@ export default function StatusBadge({ status }: { status: ProjectStatus }) {
     منشور: 'status-published',
     'قيد التطوير': 'status-development',
     داخلي: 'status-internal',
+    مؤرشف: 'status-archived',
+    متوقف: 'status-stopped',
+    تجريبي: 'status-experimental',
   };
   return (
     <span
