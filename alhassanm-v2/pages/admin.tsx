@@ -5,6 +5,7 @@ import { FormEvent, useEffect, useMemo, useState } from 'react';
 import {
   Eye,
   EyeOff,
+  Images,
   KeyRound,
   LogOut,
   Pencil,
@@ -192,7 +193,8 @@ export default function AdminPage() {
         <header className='sticky top-0 z-40 border-b border-[var(--border)] bg-[color:var(--background-alpha)] backdrop-blur-xl'>
           <div className='mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8'>
             <div className='flex items-center gap-3'><Monogram className='h-11 w-11 text-[var(--primary)]' /><div><strong className='block'>لوحة إدارة الحسن الرقمي</strong><span className='text-xs text-[var(--muted)]'>سجل المشاريع المركزي</span></div></div>
-            <div className='flex items-center gap-2'>
+            <div className='flex flex-wrap items-center gap-2'>
+              <a href='/admin/gallery/' className='button-secondary'><Images className='h-4 w-4' />معرض الأعمال</a>
               <button onClick={() => loadProjects()} disabled={busy} className='button-secondary'><RefreshCw className='h-4 w-4' />تحديث</button>
               <button onClick={() => { sessionStorage.removeItem('portfolio-admin-password'); setAuthenticated(false); setPassword(''); }} className='button-ghost'><LogOut className='h-4 w-4' />خروج</button>
             </div>
