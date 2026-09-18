@@ -6,51 +6,69 @@ export type GalleryAlbum = {
   featured: boolean;
   sort_order: number;
   cover_item_id?: string | null;
-  visible?: boolean;
-  sharepoint_folder_id?: string | null;
-  source_path?: string | null;
   updated_at?: string;
+  visible?: boolean;
+  source_path?: string | null;
 };
 
 export type GalleryItem = {
   id: string;
-  album_id?: string | null;
+  album_id: string | null;
   title: string;
   description: string;
   media_type: 'image' | 'video';
-  mime_type?: string | null;
-  visible?: boolean;
+  mime_type: string | null;
   featured: boolean;
   sort_order: number;
-  project_slug?: string | null;
+  project_slug: string | null;
+  thumbnail_url: string | null;
+  poster_url: string | null;
+  width: number | null;
+  height: number | null;
+  duration_seconds: number | null;
+  file_size: number | null;
+  updated_at?: string;
+  visible?: boolean;
   source_provider?: string;
-  source_item_id?: string | null;
-  site_id?: string | null;
-  drive_id?: string | null;
   source_path?: string | null;
   external_url?: string | null;
-  thumbnail_url?: string | null;
-  poster_url?: string | null;
-  width?: number | null;
-  height?: number | null;
-  duration_seconds?: number | null;
-  file_size?: number | null;
-  updated_at?: string;
+  object_key?: string | null;
+  local_relative_path?: string | null;
+  content_hash?: string | null;
+  sync_status?: 'manual' | 'synced' | 'pending_review' | 'missing_local' | 'error';
+  synced_at?: string | null;
+  original_modified_at?: string | null;
 };
 
 export type GallerySettings = {
-  id: number;
+  id?: number;
   provider: string;
-  integration_status: 'pending_authorization' | 'configured' | 'connected' | 'error';
-  tenant_host?: string | null;
-  site_path?: string | null;
-  site_id?: string | null;
-  drive_id?: string | null;
-  root_folder_id?: string | null;
-  library_name: string;
+  integration_status: 'pending_authorization' | 'configured' | 'connected' | 'error' | 'ready_for_r2_credentials' | 'local_sync_ready';
+  sync_mode?: string;
   root_path: string;
-  last_sync_at?: string | null;
-  last_sync_message?: string | null;
+  last_sync_at: string | null;
+  last_sync_message: string | null;
+  public_media_base_url?: string | null;
+};
+
+export type GalleryDevice = {
+  id: string;
+  name: string;
+  active: boolean;
+  last_seen_at: string | null;
+  last_status: string | null;
+  created_at?: string;
+};
+
+export type GalleryEvent = {
+  id: number;
+  event_type: string;
+  relative_path: string | null;
+  object_key: string | null;
+  item_id: string | null;
+  status: string;
+  message: string | null;
+  created_at: string;
 };
 
 const SUPABASE_URL =
@@ -76,7 +94,7 @@ async function publicFetch(path: string) {
 export async function fetchGallery() {
   const [albums, items] = await Promise.all([
     publicFetch('gallery_public_albums?select=*&order=sort_order.asc,name.asc'),
-    publicFetch('gallery_public_items?select=*&order=sort_order.asc,title.asc'),
+    publicFetch('gallery_public_items?select=*&order=sort_order.asc,updated_at.desc'),
   ]);
   return {
     albums: (Array.isArray(albums) ? albums : []) as GalleryAlbum[],
@@ -84,8 +102,7 @@ export async function fetchGallery() {
   };
 }
 
-export function galleryMediaUrl(item: Pick<GalleryItem, 'id' | 'external_url'>) {
-  if (item.external_url) return item.external_url;
+export function galleryMediaUrl(item: Pick<GalleryItem, 'id'>) {
   return SUPABASE_URL + '/functions/v1/gallery-media?id=' + encodeURIComponent(item.id);
 }
 
