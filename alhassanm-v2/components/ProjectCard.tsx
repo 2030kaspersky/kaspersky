@@ -37,7 +37,7 @@ export default function ProjectCard({ project }: { project: Project }) {
         </div>
         <div className="mt-auto flex flex-wrap items-center gap-2 pt-6">
           <a
-            href={'/projects/' + project.slug + '/'}
+            href={'/project/?slug=' + encodeURIComponent(project.slug)}
             className="button-secondary"
           >
             التفاصيل <ArrowLeft className="h-4 w-4" />
