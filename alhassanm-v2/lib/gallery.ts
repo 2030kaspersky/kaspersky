@@ -59,7 +59,7 @@ const SUPABASE_URL =
 
 const SUPABASE_ANON_KEY =
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJmd3pxYmprYnVmbXJyZm1ocW5payIsInJlZiI6ImZ3enFiamtidWZtcnJmbWhxbmlrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk0OTQ4ODAsImV4cCI6MjEwNTA3MDg4MH0.48HeUbNwAI-pkRMoW-bc0f0_PlweK4dKhNrT16jQgjA';
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ3enFiamtidWZtcnJmbWhxbmlrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk0OTQ4ODAsImV4cCI6MjEwNTA3MDg4MH0.48HeUbNwAI-pkRMoW-bc0f0_PlweK4dKhNrT16jQgjA';
 
 async function publicFetch(path: string) {
   const response = await fetch(SUPABASE_URL + '/rest/v1/' + path, {
