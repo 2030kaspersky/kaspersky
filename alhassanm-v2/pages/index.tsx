@@ -1,7 +1,7 @@
 'use client';
 
 import Head from 'next/head';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   ArrowLeft,
   BarChart3,
@@ -25,14 +25,8 @@ import Monogram from '../components/Monogram';
 import ProjectCard from '../components/ProjectCard';
 import StatusBadge from '../components/StatusBadge';
 import FeaturedPreview from '../components/FeaturedPreview';
-import {
-  categoryCount,
-  featuredProjects,
-  projectCategories,
-  projects,
-  projectStatuses,
-  publishedCount,
-} from '../data/projects';
+import { projects as fallbackProjects } from '../data/projects';
+import { fetchPublicProjects } from '../lib/portfolio';
 
 const services = [
   [
@@ -80,10 +74,50 @@ export default function Home() {
   const [category, setCategory] = useState('الكل');
   const [status, setStatus] = useState('الكل');
   const [notice, setNotice] = useState('');
+  const [catalog, setCatalog] = useState(fallbackProjects);
+  const [catalogReady, setCatalogReady] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetchPublicProjects()
+      .then(items => {
+        if (!cancelled && items.length) setCatalog(items);
+      })
+      .catch(() => {
+        // Keep the bundled fallback so the public portal remains available.
+      })
+      .finally(() => {
+        if (!cancelled) setCatalogReady(true);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const featuredCatalog = useMemo(
+    () => catalog.filter(project => project.featured),
+    [catalog]
+  );
+  const categories = useMemo(
+    () => ['الكل', ...Array.from(new Set(catalog.map(project => project.category)))],
+    [catalog]
+  );
+  const statuses = useMemo(
+    () => ['الكل', ...Array.from(new Set(catalog.map(project => project.status)))],
+    [catalog]
+  );
+  const publishedTotal = useMemo(
+    () => catalog.filter(project => project.status === 'منشور').length,
+    [catalog]
+  );
+  const categoryTotal = useMemo(
+    () => new Set(catalog.map(project => project.category)).size,
+    [catalog]
+  );
 
   const filtered = useMemo(() => {
     const normalized = query.trim().toLocaleLowerCase('ar');
-    return projects.filter(project => {
+    return catalog.filter(project => {
       const matchesQuery =
         !normalized ||
         (
@@ -100,7 +134,7 @@ export default function Home() {
       const matchesStatus = status === 'الكل' || project.status === status;
       return matchesQuery && matchesCategory && matchesStatus;
     });
-  }, [query, category, status]);
+  }, [query, category, status, catalog]);
 
   const copyValue = async (value: string, message: string) => {
     try {
@@ -195,9 +229,9 @@ export default function Home() {
                 </div>
                 <div className="mt-8 grid max-w-xl grid-cols-3 gap-3 border-t border-[var(--border)] pt-5">
                   {[
-                    [projects.length, 'مشروعًا'],
-                    [publishedCount, 'مشاريع منشورة'],
-                    [categoryCount, 'مجالات'],
+                    [catalog.length, 'مشروعًا'],
+                    [publishedTotal, 'مشاريع منشورة'],
+                    [categoryTotal, 'مجالات'],
                   ].map(([value, label]) => (
                     <div key={String(label)}>
                       <strong className="block text-2xl text-[var(--primary)]">
@@ -234,7 +268,7 @@ export default function Home() {
                       حلول تعليمية وتقنية مترابطة
                     </p>
                   </div>
-                  {featuredProjects.slice(0, 4).map(project => (
+                  {featuredCatalog.slice(0, 4).map(project => (
                     <div
                       key={project.slug}
                       className="rounded-lg border border-[var(--border)] bg-[var(--background)] p-3"
@@ -263,7 +297,7 @@ export default function Home() {
                 description="خمسة مشاريع تمثل محاور العمل الأساسية، مع معاينات تفاعلية مصغرة تحاكي طبيعة كل منصة ببيانات تجريبية واضحة."
               />
               <div className="mt-9 grid gap-5 lg:grid-cols-2">
-                {featuredProjects.map(project => (
+                {featuredCatalog.map(project => (
                   <article
                     key={project.slug}
                     className="overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--card)]"
@@ -291,7 +325,7 @@ export default function Home() {
                         </div>
                         <div className="mt-auto flex flex-wrap gap-2 pt-6">
                           <a
-                            href={'projects/' + project.slug + '/'}
+                            href={'/project/?slug=' + encodeURIComponent(project.slug)}
                             className="button-secondary"
                           >
                             التفاصيل <ArrowLeft className="h-4 w-4" />
@@ -341,7 +375,7 @@ export default function Home() {
                   role="group"
                   aria-label="تصفية حسب الحالة"
                 >
-                  {projectStatuses.map(item => (
+                  {statuses.map(item => (
                     <button
                       key={item}
                       onClick={() => setStatus(item)}
@@ -360,7 +394,7 @@ export default function Home() {
                 role="group"
                 aria-label="تصفية حسب الفئة"
               >
-                {projectCategories.map(item => (
+                {categories.map(item => (
                   <button
                     key={item}
                     onClick={() => setCategory(item)}
@@ -377,8 +411,11 @@ export default function Home() {
                 className="mt-4 text-sm text-[var(--muted)]"
                 aria-live="polite"
               >
+                {!catalogReady && (
+                  <span className="ml-2 inline-block h-2 w-2 animate-pulse rounded-full bg-[var(--primary)]" aria-label="جار تحديث السجل" />
+                )}
                 {filtered.length.toLocaleString('ar-SA')} من{' '}
-                {projects.length.toLocaleString('ar-SA')} مشروعًا
+                {catalog.length.toLocaleString('ar-SA')} مشروعًا
               </p>
               {filtered.length > 0 ? (
                 <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
@@ -437,10 +474,10 @@ export default function Home() {
                 description="نظرة قابلة للتوسع على أحدث المشاريع والتحديثات ضمن منظومة 2026."
               />
               <div className="mt-8 divide-y divide-[var(--border)] border-y border-[var(--border)]">
-                {projects.slice(0, 4).map((project, index) => (
+                {catalog.slice(0, 4).map((project, index) => (
                   <a
                     key={project.slug}
-                    href={'projects/' + project.slug + '/'}
+                    href={'/project/?slug=' + encodeURIComponent(project.slug)}
                     className="group grid gap-3 py-5 sm:grid-cols-[64px_1fr_auto] sm:items-center"
                   >
                     <span className="text-sm font-bold text-[var(--primary)]">
