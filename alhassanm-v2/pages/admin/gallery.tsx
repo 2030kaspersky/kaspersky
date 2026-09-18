@@ -165,7 +165,9 @@ export default function GalleryAdminPage() {
   }, [payload.items, query, visibility, typeFilter]);
 
   const pending = payload.items.filter(item => item.sync_status === 'pending_review').length;
-  const device = payload.devices[0];
+  const devices = payload.devices || [];
+  const events = payload.events || [];
+  const device = devices[0];
   const syncReady = payload.settings?.integration_status === 'local_sync_ready';
 
   if (!authenticated) {
@@ -316,11 +318,11 @@ export default function GalleryAdminPage() {
             </div>
           </section>
 
-          {payload.events.length > 0 && (
+          {events.length > 0 && (
             <section className='mt-10 rounded-xl border border-[var(--border)] bg-[var(--card)] p-5'>
               <h2 className='font-bold'>آخر عمليات المزامنة</h2>
               <div className='mt-4 divide-y divide-[var(--border)]'>
-                {payload.events.slice(0, 10).map(event => (
+                {events.slice(0, 10).map(event => (
                   <div key={event.id} className='grid gap-2 py-3 text-sm sm:grid-cols-[120px_1fr_auto] sm:items-center'>
                     <span>{event.event_type === 'upsert' ? 'مزامنة ملف' : event.event_type === 'heartbeat' ? 'اتصال الأداة' : event.event_type}</span>
                     <span className='truncate text-xs text-[var(--muted)]' dir='ltr'>{event.relative_path || ''}</span>
