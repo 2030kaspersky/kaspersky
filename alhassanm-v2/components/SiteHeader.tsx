@@ -136,6 +136,12 @@ export default function SiteHeader({
               {label}
             </a>
           ))}
+          <a
+            href='/gallery/'
+            className='rounded-md px-3 py-2 text-sm text-[var(--muted)] transition hover:bg-[var(--soft)] hover:text-[var(--foreground)]'
+          >
+            معرض الأعمال
+          </a>
         </nav>
 
         <div className="flex items-center gap-1">
@@ -177,6 +183,13 @@ export default function SiteHeader({
                 {label}
               </a>
             ))}
+            <a
+              href='/gallery/'
+              onClick={() => setMenuOpen(false)}
+              className='rounded-md px-3 py-3 text-sm text-[var(--muted)] hover:bg-[var(--soft)] hover:text-[var(--foreground)]'
+            >
+              معرض الأعمال
+            </a>
           </div>
         </nav>
       )}
