@@ -108,6 +108,19 @@ input {
   .admin-input { @apply h-11 w-full rounded-lg border border-[var(--border)] bg-[var(--card)] px-3 text-sm text-[var(--foreground)] outline-none transition focus:border-cyan-300/50; }
   select.admin-input, select { color-scheme: dark; }
   html.light select.admin-input, html.light select { color-scheme: light; }
+  .gallery-stat { @apply min-w-28 rounded-xl border border-[var(--border)] bg-[var(--card)] p-4; }
+  .gallery-stat strong { @apply block text-3xl text-[var(--primary)]; }
+  .gallery-stat span { @apply mt-1 block text-xs text-[var(--muted)]; }
+  .gallery-grid { @apply grid gap-4 sm:grid-cols-2 lg:grid-cols-3; }
+  .gallery-card { @apply overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--card)] text-right transition duration-300 hover:-translate-y-1 hover:border-cyan-300/30; }
+  .gallery-card-wide { @apply lg:col-span-2; }
+  .gallery-media { @apply relative aspect-[4/3] overflow-hidden bg-[var(--surface)]; }
+  .gallery-card-wide .gallery-media { @apply lg:aspect-[2/1]; }
+  .gallery-media img { @apply h-full w-full object-cover transition duration-500; }
+  .gallery-card:hover .gallery-media img { transform: scale(1.025); }
+  .gallery-overlay { @apply absolute inset-0 bg-gradient-to-t from-slate-950/55 via-transparent to-transparent opacity-70; }
+  .gallery-kind { @apply absolute bottom-3 right-3 inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-slate-950/65 px-2.5 py-1 text-[10px] font-semibold text-white backdrop-blur; }
+  .gallery-expand { @apply absolute left-3 top-3 grid h-8 w-8 place-items-center rounded-lg bg-slate-950/55 text-white opacity-0 transition group-hover:opacity-100; }
 }
 
 @keyframes enter {
