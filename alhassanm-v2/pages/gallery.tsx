@@ -212,7 +212,7 @@ export default function GalleryPage() {
             <div className='mx-auto flex max-w-7xl flex-col items-start justify-between gap-4 px-4 sm:flex-row sm:items-center sm:px-6 lg:px-8'>
               <div>
                 <p className='font-bold'>الحسن الرقمي · معرض الأعمال</p>
-                <p className='mt-1 text-sm text-[var(--muted)]'>الوسائط تُعرض داخل البوابة، والتخزين مخطط له عبر Microsoft 365 / SharePoint.</p>
+                <p className='mt-1 text-sm text-[var(--muted)]'>الملفات الأصلية محفوظة في OneDrive، ونسخ العرض تُزامن تلقائيًا إلى Cloudflare R2 وتعمل داخل البوابة.</p>
               </div>
               <a href='/' className='button-secondary'>العودة إلى البوابة <ArrowRight className='h-4 w-4' /></a>
             </div>
