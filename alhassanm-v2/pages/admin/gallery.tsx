@@ -9,6 +9,7 @@ import {
   FolderOpen,
   HardDrive,
   Image as ImageIcon,
+  KeyRound,
   LogOut,
   Pencil,
   RefreshCw,
@@ -61,6 +62,7 @@ export default function GalleryAdminPage() {
   const [editing, setEditing] = useState<GalleryItem | null>(null);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState('');
+  const [newPassword, setNewPassword] = useState('');
 
   useEffect(() => {
     const stored = sessionStorage.getItem('portfolio-admin-password');
@@ -93,6 +95,27 @@ export default function GalleryAdminPage() {
       setMessage('تم تحديث بيانات المعرض');
     } catch (error) {
       setMessage(error instanceof Error ? error.message : 'تعذر تحديث المعرض');
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function changePassword(event: FormEvent) {
+    event.preventDefault();
+    if (newPassword.length < 12) {
+      setMessage('كلمة المرور الجديدة يجب أن تكون 12 حرفًا على الأقل');
+      return;
+    }
+    setBusy(true);
+    setMessage('');
+    try {
+      await galleryAdminRequest(password, 'change_password', { newPassword });
+      setPassword(newPassword);
+      sessionStorage.setItem('portfolio-admin-password', newPassword);
+      setNewPassword('');
+      setMessage('تم تغيير كلمة مرور إدارة المشاريع والمعرض بنجاح');
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : 'تعذر تغيير كلمة المرور');
     } finally {
       setBusy(false);
     }
@@ -316,6 +339,30 @@ export default function GalleryAdminPage() {
                 </article>
               ))}
             </div>
+          </section>
+
+          <section className='mt-10 rounded-xl border border-[var(--border)] bg-[var(--card)] p-5'>
+            <div className='flex items-center gap-3'>
+              <KeyRound className='h-5 w-5 text-[var(--primary)]' />
+              <div>
+                <h2 className='font-bold'>أمان إدارة المعرض</h2>
+                <p className='text-sm text-[var(--muted)]'>كلمة المرور موحّدة مع لوحة إدارة المشاريع. تغييرها هنا يحدّث الصفحتين معًا.</p>
+              </div>
+            </div>
+            <form onSubmit={changePassword} className='mt-4 flex flex-col gap-3 sm:flex-row'>
+              <input
+                type='password'
+                value={newPassword}
+                onChange={event => setNewPassword(event.target.value)}
+                placeholder='كلمة مرور جديدة — 12 حرفًا على الأقل'
+                className='h-11 flex-1 rounded-lg border border-[var(--border)] bg-[var(--background)] px-3 outline-none focus:border-cyan-300/50'
+                autoComplete='new-password'
+              />
+              <button disabled={busy} className='button-secondary'>
+                <Save className='h-4 w-4' />
+                تغيير كلمة المرور
+              </button>
+            </form>
           </section>
 
           {events.length > 0 && (
